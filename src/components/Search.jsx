@@ -2,7 +2,7 @@
 
 const search = ({searchTerm, setSearchTerm}) => {
   return (
-    <div className='search mt-1 '>
+    <div className='search '>
       <div>
         <input type="text" 
         placeholder='Browse movies'

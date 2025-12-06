@@ -1,15 +1,22 @@
-const Hero = ({ movie, children }) => {
+const Hero = ({ movie, children}) => {
+  const bgUrl = movie
+    ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
+    : "";
+
   return (
-    <section 
-      className="hero-container"
-      style={{
-        backgroundImage: movie
-          ? `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`
-          : "none",
-      }}
-    >
-      <div className="overlay-cine" />
-      {children}
+    <section className="hero-container">
+      
+      <div
+        className="hero-bg"
+        style={{ backgroundImage: `url(${bgUrl})` }}
+      />
+
+      <div className="hero-overlay" />
+
+      <div className="hero-content">
+        {children}
+      </div>
+
     </section>
   );
 };

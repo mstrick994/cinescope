@@ -1,7 +1,7 @@
 /* ==============================================================
    FONTS
 ============================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 /* ==============================================================
    TAILWIND CORE
@@ -13,28 +13,34 @@
 ============================================================== */
 @theme {
   /* ===== COLORS ===== */
-  --color-cine-bg:        #0B0D17;
-  --color-cine-surface:   #111421; /* slightly lighter surface */
-  --color-cine-text:      #f5f5f5;
-  --color-cine-muted:     #9ca3af;
-  --color-cine-accent:    #2A39FF;
-  --color-cine-highlight: #00D8FF;
-  --color-cine-overlay:   rgba(11, 13, 23, 0.75);
+  --color-cine-bg: #0b0d17;
+  --color-cine-surface: #111421;
+  --color-cine-text: #f5f5f5;
+  --color-cine-muted: #9ca3af;
+  --color-cine-accent: #2a39ff;
+  --color-cine-highlight: #00d8ff;
+  --color-cine-overlay: rgba(11, 13, 23, 0.75);
 
-  /* Legacy compatibility (remove when all replaced) */
+  /* Legacy */
   --color-dark-100: var(--color-cine-bg);
-  --color-light-100: #cecefb;  /* TODO remove later */
+  --color-light-100: #cecefb;
   --color-gray-100: var(--color-cine-muted);
 
   /* ===== GRADIENTS ===== */
-  --gradient-cine-primary: linear-gradient(to right, #97EFFF, #00D8FF);
-  --gradient-cine-subtle: linear-gradient(to top, rgba(11,13,23,0.95), rgba(11,13,23,0.2));
+  --gradient-cine-primary: linear-gradient(to right, #97efff, #00d8ff);
+  --gradient-cine-subtle: linear-gradient(
+    to top,
+    rgba(11, 13, 23, 0.95),
+    rgba(11, 13, 23, 0.2)
+  );
 
   /* ===== TYPOGRAPHY ===== */
   --font-heading: "Bebas Neue", sans-serif;
-  --font-body:    "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
+
   --font-size-hero-mobile: 2.5rem;
   --font-size-hero-desktop: 4.5rem;
+
   --font-size-subtitle-mobile: 1.125rem;
   --font-size-subtitle-desktop: 1.5rem;
 
@@ -47,9 +53,6 @@
 
   /* ===== RADIUS ===== */
   --radius-card: 1rem;
-
-  /* ===== BACKGROUNDS ===== */
-  --background-image-hero-pattern: url('/assets/hero-bg.png'); /* TODO: replace path */
 }
 
 /* ==============================================================
@@ -65,7 +68,7 @@
   }
 
   h1 {
-    @apply mx-auto max-w-4xl text-center text-5xl font-bold leading-tight tracking-[-1%] text-cine-text sm:text-[64px] sm:leading-[76px];
+    @apply max-w-4xl text-center font-bold leading-tight tracking-[-1%] text-cine-text text-5xl sm:text-[64px] sm:leading-[76px];
   }
 
   h2 {
@@ -73,52 +76,215 @@
   }
 
   main {
-    @apply min-h-screen relative bg-cine-bg;
-  }
-
-  header {
-    @apply sm:mt-10 mt-5;
-  }
-
-  header img {
-    @apply w-full max-w-lg h-auto object-contain mx-auto drop-shadow-md;
+    @apply min-h-screen relative bg-cine-bg overflow-hidden;
   }
 }
 
 /* ==============================================================
-   COMPONENTS
+   HERO SYSTEM — Apple TV Style
 ============================================================== */
 @layer components {
-  .pattern {
-    @apply bg-hero-pattern w-screen h-screen bg-center bg-cover absolute z-0;
+  .hero-container {
+    @apply relative w-full overflow-hidden z-0;
+
+    /* AppleTV-style responsive height uses:
+       - Use min( calc(90vh - 64px), 175vw )
+       - 64px = your header height
+    */
+
+    height: min(130vh, 175vw);
+
   }
 
-  .wrapper {
-    @apply px-5 py-12 xs:p-10 max-w-7xl mx-auto flex flex-col relative z-10;
-  }
+  .hero-bg {
+    @apply absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-all duration-500;
+    z-index: 0;
 
-  .trending {
-    @apply mt-20;
-
-    & ul {
-      @apply flex flex-row overflow-y-auto gap-5 -mt-2 w-full hide-scrollbar;
-    }
-
-    & ul li {
-      @apply min-w-[230px] flex flex-row items-center;
-    }
-
-    & ul li p {
-      @apply fancy-text mt-[22px] text-nowrap;
-    }
-
-    & ul li img {
-      @apply w-[675px] h-[800px] rounded-lg object-cover -ml-3.5;
+    /* Shifts artwork upward on mobile like Apple TV */
+    @media (max-width: 739px) {
+      object-position: center 30%;
     }
   }
 
+  .hero-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-[#0B0D17]/95 via-[#0B0D17]/40 to-transparent;
+    z-index: 1;
+  }
+
+  .hero-content {
+    @apply relative z-10 flex flex-col px-0 sm:px-1;
+    padding-top: 5rem; /* Keeps text below header overlap */
+  }
+}
+
+
+/* ============================================
+   NEW RESPONSIVE CARD SYSTEM USING RATIOS
+=============================================== */
+
+/* Wrapper height still supports growth */
+.carousel-row {
+  @apply flex flex-row items-center justify-center mx-3 gap-3
+  overflow-x-auto hide-scrollbar snap-x snap-mandatory
+   xl:h-150
+  lg:h-150
+  md:h-120
+  h-100;
+}
+
+/* ------- INACTIVE CARDS ------- */
+.carousel-card {
+  @apply relative rounded-xl overflow-hidden cursor-pointer shadow-lg snap-center
+  transition-all duration-300 ease-out;
+  flex-shrink: 0;
+  transform-origin: bottom center;
+
+  /* Default: big desktop (looks like your current 1280px shot) */
+  width: min(22vw, 230px);
+  aspect-ratio: 1 / 2.2;
+}
+
+/* When viewport gets tighter (< 1200px), shrink card width
+   so 5 cards + gaps always fit without clipping the first one */
+@media (max-width: 1200px) {
+  .carousel-card {
+    width: min(18vw, 210px);  /* slightly narrower, same tall vibe */
+  }
+}
+
+/* ------- ACTIVE CARDS ------- */
+.carousel-card.active {
+  @apply z-20 scale-110;
+
+  /* Big desktop */
+  width: calc(min(22vw, 230px) * 1.15);
+  aspect-ratio: 1 / 1.9;
+  flex-shrink: 0;
+}
+
+/* Match the mid-desktop tweak for active cards too */
+@media (max-width: 1200px) {
+.carousel-row {
+  height: 505px;
+}
+
+  .carousel-card.active {
+    width: calc(min(19vw, 210px) * 1.15);
+  }
+}
+
+/* Ghost spacer for scroll-snap so first card never clips */
+.snap-spacer {
+  flex-shrink: 0;
+  width:clamp(40px, 8vw, 72px);  
+  height: 100%;
+}
+
+.snap-spacer-right {
+  flex-shrink: 0;
+  width: clamp(7px, 4vw, 10px);
+  height: 100%;
+}
+
+
+
+/* Images always fill */
+.carousel-card img {
+  @apply w-full h-full object-cover;
+}
+
+
+/* ============ SMALLER SCREENS OVERRIDES ============ */
+
+
+
+/* Small tablets / big phones (≤ 768px) */
+@media (max-width: 768px) {
+  /* Give the row a fixed height big enough for the active card */
+  .carousel-row {
+    height: 370px;              /* bump this up/down if you need */
+  }
+
+  /* Slightly narrower cards so 5 fit comfortably */
+  .carousel-card {
+    min-width: calc(min(16vw, 160px) * 1.15);
+    /* aspect-ratio stays 1 / 2.2 from the base rule */
+  }
+
+  .carousel-card.active {
+    width: calc(min(18vw, 170px) * 1.15);
+    /* aspect-ratio 1 / 1.9 from base active rule */
+  }
+
+    .snap-spacer {
+    width: clamp(56px, 14vw, 96px);   /* noticeably bigger on small screens */
+  }
+
+  .snap-spacer-right {
+    width: 1vw;
+  }
+
+}
+
+@media (max-width: 608px) {
+  .carousel-row {
+    height: 300px;              /* still taller than the active card */
+  }
+
+  .carousel-card {
+    min-width: calc(min(19vw, 160px));
+  }
+
+  .carousel-card.active {
+    width: calc(min(19vw, 160px) * 1.15);
+  }
+  .snap-spacer-right {
+    width: 1vw;
+  }
+}
+
+/* Small phones (≤ 480px) */
+@media (max-width: 480px) {
+  .carousel-row {
+    height: 225px;              /* still taller than the active card */
+  }
+
+  .carousel-card {
+    min-width: calc(min(16.5vw, 160px));
+  }
+
+  .carousel-card.active {
+    width: calc(min(16.5vw, 160px) * 1.15);
+  }
+  .snap-spacer-right {
+    width: 1vw;
+  }
+}
+
+@media (max-width: 300px) {
+  .carousel-row {
+    height: 200px;              /* still taller than the active card */
+  }
+
+  .carousel-card {
+    min-width: calc(min(18vw, 160px));
+  }
+
+  .carousel-card.active {
+    width: calc(min(18vw, 160px) * 1.15);
+  }
+  .snap-spacer-right {
+    width: .5vw;
+  }
+}
+
+
+/* ==============================================================
+   SEARCH BAR
+============================================================== */
+@layer components {
   .search {
-    @apply w-full bg-cine-muted/5 p-1 rounded-2xl mt-10 max-w-xl mx-auto;
+    @apply w-full bg-cine-muted/5 rounded-xl items-center justify-center max-w-xl;
 
     & div {
       @apply relative flex items-center;
@@ -129,12 +295,17 @@
     }
 
     & input {
-      @apply w-full bg-transparent py-2 sm:pr-10 pl-10 text-base text-cine-text placeholder-cine-muted outline-hidden;
+      @apply w-full bg-transparent  sm:pr-10 pl-10 text-base text-cine-text placeholder-cine-muted outline-hidden;
     }
   }
+}
 
+/* ==============================================================
+   MOVIE GRID & CARDS (for future sections)
+============================================================== */
+@layer components {
   .all-movies {
-    @apply space-y-9;
+    @apply space-y-9 px-4 sm:px-0;
 
     & ul {
       @apply grid grid-cols-1 gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
@@ -179,8 +350,6 @@
 /* ==============================================================
    UTILITIES
 ============================================================== */
-
-/* === TEXT & GRADIENTS === */
 @utility text-gradient-cine {
   background: var(--gradient-cine-primary);
   -webkit-background-clip: text;
@@ -190,7 +359,7 @@
 @utility fancy-text {
   -webkit-text-stroke: 5px rgba(206, 206, 251, 0.5);
   font-size: 190px;
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: "Bebas Neue", sans-serif;
 }
 
 @utility text-gradient-1 {
@@ -201,18 +370,19 @@
   @apply bg-linear-to-r from-[#D6C7FF] to-[#AB8BFF] bg-clip-text text-transparent;
 }
 
-/* === SCROLL / TRANSITIONS === */
 @utility hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @utility smooth-transition {
   @apply transition-all duration-300 ease-in-out;
 }
 
-/* === SHADOWS & EFFECTS === */
 @utility glow-border {
   box-shadow: 0 0 10px rgba(0, 216, 255, 0.3);
 }
@@ -225,7 +395,6 @@
   @apply absolute inset-0 bg-gradient-to-t from-[#0B0D17]/95 via-[#0B0D17]/50 to-transparent;
 }
 
-/* === TYPOGRAPHY === */
 @utility hero-title {
   font-family: var(--font-heading);
   font-size: var(--font-size-hero-mobile);
@@ -245,10 +414,4 @@
   @media (min-width: 768px) {
     font-size: var(--font-size-subtitle-desktop);
   }
-}
-
-/* === CONTAINERS === */
-@utility hero-container {
-  @apply relative flex flex-col justify-end min-h-[100vh] px-6 sm:px-12 pb-20 overflow-hidden;
-  background-color: var(--color-cine-bg);
 }

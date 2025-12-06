@@ -3,41 +3,37 @@ import Header from "./components/Header/Header.jsx";
 import Logo from "./components/Hero/Logo.jsx";
 import Search from "./components/Search.jsx";
 import TopRow from "./components/Hero/TopRow.jsx";
-import { getTrending } from "./API/tmdb";
 import Hero from "./components/Hero/Hero.jsx";
+import { getTrending } from "./API/tmdb";
+
 const App = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  
   const [trending, setTrending] = useState([]);
   const [heroMovie, setHeroMovie] = useState(null);
-
 
   useEffect(() => {
     const loadTrendingMovies = async () => {
       try {
         const data = await getTrending();
-        
         setTrending(data);
+        setHeroMovie(data[0]); // set first hero bg immediately
       } catch (err) { 
         console.error("Error loading trending", err);
       }
-    } 
+    };
     loadTrendingMovies();
   }, []);
 
   return (
-    <main>
-      <div className="pattern" />
-        <div className="wrapper pt-0">
-        <Header />
-         <Logo />
-        <Search 
-        searchTerm={searchTerm} 
-        setSearchTerm={setSearchTerm} 
-        />
-        <Hero movie={heroMovie}>
-  <TopRow trending={trending} onChangeHero={setHeroMovie} />
-</Hero>
-      </div>
+    <main className="relative">
+      <Header className="absolute top-0 left-0 w-full z-20" />
+
+        <Hero  movie={heroMovie}>
+          
+        </Hero>
+        
+
+      <TopRow trending={trending} onChangeHero={setHeroMovie} />
     </main>
   );
 };

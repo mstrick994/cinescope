@@ -1,36 +1,52 @@
+import TopRowCard from "./TopRowCard";
 import { useState, useEffect } from "react";
-
 
 const TopRow = ({ trending, onChangeHero }) => {
   const movies = trending.slice(0, 5);
   const [activeIndex, setActiveIndex] = useState(0);
 
-useEffect(() => {
-  if (!trending || trending.length === 0) return;
+  useEffect(() => {
+    if (!trending || trending.length === 0) return;
+    const movie = trending[activeIndex];
+    if (movie) onChangeHero(movie);
+  }, [activeIndex, trending, onChangeHero]);
 
-  const movie = trending[activeIndex];
-  if (!movie) return;
+const handleActive = (index) => {
+  setActiveIndex(index);
 
-  onChangeHero(movie);
-
-}, [activeIndex, trending, onChangeHero]);
-
+  // Wait for card animation to finish
+  setTimeout(() => {
+    document.getElementById(`card-${index}`)?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest"
+    });
+  }, 320); // match your 300ms transition
+};
 
 
   return (
-    <section className="trending">
-      <h2 className="text-2xl font-bold mb-6">Trending Now</h2>
+    <section className="trending-section">
+      <h2 className="trending-title text-2xl font-bold ml-4">
+        Top Trending Now
+      </h2>
 
-      <ul>
-        {movies.map(movie => (
-          <li key={movie.id}>
-            <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title || movie.name}
-            />
-          </li>
+      <div className="carousel-row">
+          {/*Ghost spacer so first card never gets clipped */}
+        <div className="snap-spacer" aria-hidden="true" />
+        {movies.map((movie, idx) => (
+          <TopRowCard
+            key={movie.id}
+            movie={movie}
+            isActive={idx === activeIndex}
+            index={idx}                         // pass it down
+            onClick={() => handleActive(idx)}   // use the scroll logic
+          />
         ))}
-      </ul>
+
+        {/* Right spacer */}
+  <div className="snap-spacer-right" aria-hidden="true" />
+      </div>
     </section>
   );
 };
