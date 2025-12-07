@@ -4,6 +4,7 @@ import Logo from "./components/Hero/Logo.jsx";
 import Search from "./components/Search.jsx";
 import TopRow from "./components/Hero/TopRow.jsx";
 import Hero from "./components/Hero/Hero.jsx";
+import  HeroInfo from "./components/Hero/HeroInfo";
 import { getTrending } from "./API/tmdb";
 
 const App = () => {
@@ -29,7 +30,7 @@ const App = () => {
       <Header className="absolute top-0 left-0 w-full z-20" />
 
         <Hero  movie={heroMovie}>
-          
+          <HeroInfo movie={heroMovie} />
         </Hero>
         
 

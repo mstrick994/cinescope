@@ -111,6 +111,63 @@
 
   }
 
+   .hero-actions {
+    @apply mt-6 flex flex-wrap items-center gap-3;
+  }
+
+  .hero-btn {
+    @apply inline-flex items-center justify-center gap-2
+    rounded-full px-5 py-2.5
+    text-sm sm:text-base font-semibold
+    smooth-transition
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent;
+  }
+
+  .hero-btn-icon {
+    @apply text-sm sm:text-base;
+  }
+
+  /* Play Now – matches "Cine" side (blue / cyan) */
+  .hero-btn-primary {
+    background-image: linear-gradient(to right, #97EFFF, #00D8FF);
+    color: #0B0D17; /* dark bg color so the text pops */
+    box-shadow: var(--shadow-soft);
+  }
+
+  .hero-btn-primary:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 216, 255, 0.35);
+  }
+
+  /* Watch Trailer – matches "Scope" side (purple) */
+  .hero-btn-secondary {
+    background-image: linear-gradient(to right, #D6C7FF, #AB8BFF);
+    color: #0B0D17;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .hero-btn-secondary:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(171, 139, 255, 0.35);
+  }
+
+  /* + Add – subtle gray outline pill */
+  .hero-btn-tertiary {
+    @apply border border-cine-muted/60;
+    background-color: transparent;
+    color: var(--color-cine-text);
+    padding-inline: 0.9rem;
+  }
+
+  .hero-btn-tertiary:hover {
+    background-color: rgba(156, 163, 175, 0.15); /* cine-muted-ish */
+    transform: translateY(-1px);
+  }
+
+  .hero-title {
+    @apply  text-left mb-4;
+  }
+
   .hero-bg {
     @apply absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-all duration-500;
     z-index: 0;
@@ -129,6 +186,17 @@
   .hero-content {
     @apply relative z-10 flex flex-col px-0 sm:px-1;
     padding-top: 5rem; /* Keeps text below header overlap */
+  }
+
+   .hero-pill {
+    @apply inline-flex items-center px-3 py-1 rounded-full
+    bg-black/40 border border-white/10
+    text-[0.7rem] sm:text-xs font-medium text-cine-text/80;
+    backdrop-filter: blur(4px);
+  }
+
+  .hero-overview {
+    @apply text-cine-text/80 leading-relaxed line-clamp-4;
   }
 }
 
