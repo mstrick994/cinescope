@@ -81,6 +81,21 @@
 }
 
 /* ==============================================================
+  HEADER OVERLAY
+============================================================== */
+
+.header-overlay {
+  @apply absolute inset-0 pointer-events-none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.38) 0%,
+    rgba(0, 0, 0, 0.22) 40%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+
+/* ==============================================================
    HERO SYSTEM — Apple TV Style
 ============================================================== */
 @layer components {
@@ -280,25 +295,49 @@
 
 
 /* ==============================================================
-   SEARCH BAR
+   SEARCH BAR — CLEAN FLAT HEADER STYLE
 ============================================================== */
 @layer components {
   .search {
-    @apply w-full bg-cine-muted/5 rounded-xl items-center justify-center max-w-xl;
+    @apply
+      flex items-center
+      w-full max-w-[180px] sm:max-w-[220px]   /* smaller + fits header better */
+      h-8                                      /* consistent visible height */
+      bg-white/12                              /* subtle, readable always */
+      border border-white/20                   /* faint outline for clarity */
+      rounded-md                               /* NOT a pill */
+      px-2
+      transition-all duration-200;
+  }
 
-    & div {
-      @apply relative flex items-center;
-    }
+  .search:hover {
+    @apply bg-white/20 border-white/30;
+  }
 
-    & img {
-      @apply absolute left-2 h-5 w-5;
-    }
+  .search:focus-within {
+    @apply bg-white/25 border-white/40 shadow-[0_0_6px_rgba(255,255,255,0.25)];
+  }
 
-    & input {
-      @apply w-full bg-transparent  sm:pr-10 pl-10 text-base text-cine-text placeholder-cine-muted outline-hidden;
-    }
+  .search div {
+    @apply relative flex items-center w-full;
+  }
+
+  .search img {
+    @apply absolute left-2 h-4 w-4 opacity-80;
+  }
+
+  .search input {
+    @apply
+      w-full
+      bg-transparent
+      pl-3 pr-1
+      text-[0.8rem] sm:text-sm
+      text-white
+      placeholder-white/60
+      outline-hidden;
   }
 }
+
 
 /* ==============================================================
    MOVIE GRID & CARDS (for future sections)
