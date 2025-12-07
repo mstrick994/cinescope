@@ -22,6 +22,32 @@ const HeroInfo = ({ movie }) => {
 
   const mediaTypeLabel = isTv ? "Series" : "Movie";
 
+  // =============================
+  // NEW → CERTIFICATION LOGIC
+  // =============================
+  let certification = null;
+
+  if (isTv && movie.content_ratings?.results) {
+    const us = movie.content_ratings.results.find(
+      (r) => r.iso_3166_1 === "US"
+    );
+    certification = us?.rating || null;
+  }
+
+  if (!isTv && movie.release_dates?.results) {
+    const us = movie.release_dates.results.find(
+      (r) => r.iso_3166_1 === "US"
+    );
+
+    if (us?.release_dates?.length) {
+      const withCert = us.release_dates.find(
+        (d) => d.certification && d.certification.trim() !== ""
+      );
+      certification = withCert?.certification || null;
+    }
+  }
+  // =============================
+
   let runtimeMinutes = null;
 
   if (!isTv) {
@@ -56,8 +82,12 @@ const HeroInfo = ({ movie }) => {
 
       {/* Meta pills */}
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+        {/* MOVIE / SERIES LABEL */}
+        <span className="hero-pill">{mediaTypeLabel}</span>
+        
         {year && <span className="hero-pill">{year}</span>}
 
+        {/* STAR RATING */}
         {rating && (
           <span className="hero-pill">
             ★ {rating}
@@ -65,9 +95,14 @@ const HeroInfo = ({ movie }) => {
           </span>
         )}
 
+
+        {/* RUNTIME */}
         {runtimeLabel && <span className="hero-pill">{runtimeLabel}</span>}
 
-        <span className="hero-pill">{mediaTypeLabel}</span>
+         {/* NEW → CONTENT RATING */}
+        {certification && (
+          <span className="hero-pill">{certification}</span>
+        )}
       </div>
 
       {/* Genres */}

@@ -12,10 +12,15 @@ export const getTrending = async () => {
   return res.data.results;
 };
 
-// ⭐ NEW: fetch full details for hero section
+// NEW: fetch full details + rating info
 export const getTitleDetails = async (id, mediaType = "movie") => {
-  const type = mediaType === "tv" ? "tv" : "movie";
+  const isTv = mediaType === "tv";
 
-  const res = await client.get(`/${type}/${id}`);
+  const res = await client.get(`/${isTv ? "tv" : "movie"}/${id}`, {
+    params: {
+      append_to_response: isTv ? "content_ratings" : "release_dates",
+    },
+  });
+
   return res.data;
 };

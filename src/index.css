@@ -78,6 +78,10 @@
   main {
     @apply min-h-screen relative bg-cine-bg overflow-hidden;
   }
+
+  button {
+    @apply cursor-pointer;
+  }
 }
 
 /* ==============================================================
