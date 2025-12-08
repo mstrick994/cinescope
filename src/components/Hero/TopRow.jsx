@@ -3,33 +3,48 @@ import { useState, useEffect } from "react";
 import { getTitleDetails } from "../../API/tmdb";
 
 const TopRow = ({ trending, onChangeHero }) => {
-  const movies = trending.slice(0, 5);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    if (!movies || movies.length === 0) return;
+  // 🧠 cache of full details keyed by TMDB id
+  const [detailsCache, setDetailsCache] = useState({});
 
+  useEffect(() => {
+    if (!trending || trending.length === 0) return;
+
+    // always work off the same visible slice
+    const movies = trending.slice(0, 5);
     const movie = movies[activeIndex];
     if (!movie) return;
 
     let cancelled = false;
 
     const loadDetails = async () => {
+      // 1) if we already fetched this movie, just reuse it
+      const cached = detailsCache[movie.id];
+      if (cached) {
+        onChangeHero(cached);
+        return;
+      }
+
       try {
-        // movie vs tv — fall back if media_type is missing
         const mediaType =
-          movie.media_type ||
-          (movie.first_air_date ? "tv" : "movie");
+          movie.media_type || (movie.first_air_date ? "tv" : "movie");
 
         const details = await getTitleDetails(movie.id, mediaType);
 
-        if (!cancelled) {
-          onChangeHero(details); // full details: genres, runtime, etc.
-        }
+        if (cancelled) return;
+
+        // 2) store in cache so we never re-fetch this id
+        setDetailsCache((prev) => ({
+          ...prev,
+          [movie.id]: details,
+        }));
+
+        onChangeHero(details);
       } catch (err) {
         console.error("Error loading title details", err);
         if (!cancelled) {
-          // fallback: still show the basic trending item
+          // fall back to lightweight object from /trending
           onChangeHero(movie);
         }
       }
@@ -40,7 +55,7 @@ const TopRow = ({ trending, onChangeHero }) => {
     return () => {
       cancelled = true;
     };
-  }, [activeIndex, movies, onChangeHero]);
+  }, [activeIndex, trending, detailsCache, onChangeHero]);
 
   const handleActive = (index) => {
     setActiveIndex(index);
@@ -52,8 +67,11 @@ const TopRow = ({ trending, onChangeHero }) => {
         inline: "center",
         block: "nearest",
       });
-    }, 320); // match your 300ms transition
+    }, 320);
   };
+
+  // we still only *render* the first 5
+  const movies = trending.slice(0, 5);
 
   return (
     <section className="trending-section">

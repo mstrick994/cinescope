@@ -377,10 +377,19 @@
       h-8                                      /* consistent visible height */
       bg-white/12                              /* subtle, readable always */
       border border-white/20                   /* faint outline for clarity */
-      rounded-md                               /* NOT a pill */
+      rounded-md                               
       px-2
       transition-all duration-200;
   }
+
+
+/* Mobile menu version – full width, beefier, more padding */
+.mobile-menu-overlay .search {
+  @apply
+    max-w-full      /* no width cap */
+    h-10            /* a little taller */
+    px-4;           /* more breathing room */
+}
 
   .search:hover {
     @apply bg-white/20 border-white/30;
@@ -395,14 +404,20 @@
   }
 
   .search img {
-    @apply absolute left-2 h-4 w-4 opacity-80;
-  }
+  @apply
+    absolute
+    left-3           /* a bit more inset from left edge */
+    top-1/2
+    -translate-y-1/2
+    h-4 w-4
+    opacity-80;
+}
 
   .search input {
     @apply
       w-full
       bg-transparent
-      pl-3 pr-1
+      pl-9 pr-2
       text-[0.8rem] sm:text-sm
       text-white
       placeholder-white/60

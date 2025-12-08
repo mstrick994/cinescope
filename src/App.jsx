@@ -27,7 +27,7 @@ const App = () => {
 
   return (
     <main className="relative">
-      <Header className="absolute top-0 left-0 w-full z-20" />
+      <Header className="absolute top-0 left-0 w-full z-40" />
 
         <Hero  movie={heroMovie}>
           <HeroInfo movie={heroMovie} />
