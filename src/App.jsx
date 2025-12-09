@@ -33,7 +33,7 @@ const App = () => {
           <HeroInfo movie={heroMovie} />
         </Hero>
         
-    <section className="mt-10 sm:mt-6 md:mt-6 lg:mt-10">
+    <section className="mt-10 sm:mt-3 md:mt-3 lg:mt-7">
       <TopRow trending={trending} onChangeHero={setHeroMovie} />
     </section>
       
