@@ -111,9 +111,23 @@
        - 64px = your header height
     */
 
-    height: min(130vh, 175vw);
+    height: min(120vh, 175vw);
 
   }
+
+  /* Laptops / tablets */
+@media (max-width: 1200px) {
+  .hero-container {
+    height: min(100vh, 190vw);
+  }
+}
+
+/* Phones */
+@media (max-width: 800px) {
+  .hero-container {
+    height: min(95vh, 210vw);
+  }
+}
 
    .hero-actions {
     @apply mt-6 flex flex-wrap items-center gap-3;
@@ -170,6 +184,9 @@
 
   .hero-title {
     @apply  text-left mb-4;
+     font-family: var(--font-heading);
+    font-size: clamp(3.2rem, 5vw, 3.8rem);
+    line-height: 1.05;
   }
 
   .hero-bg {
@@ -188,8 +205,8 @@
   }
 
   .hero-content {
-    @apply relative z-10 flex flex-col px-0 sm:px-1;
-    padding-top: 5rem; /* Keeps text below header overlap */
+    @apply relative z-10 flex flex-col px-0 sm:px-6;
+    padding-top:  clamp(4rem, 14vh, 7rem);
   }
 
    .hero-pill {
@@ -521,7 +538,7 @@
   @apply absolute inset-0 bg-gradient-to-t from-[#0B0D17]/95 via-[#0B0D17]/50 to-transparent;
 }
 
-@utility hero-title {
+@utility hero-heading {
   font-family: var(--font-heading);
   font-size: var(--font-size-hero-mobile);
   line-height: 1.1;
@@ -531,6 +548,7 @@
     font-size: var(--font-size-hero-desktop);
   }
 }
+
 
 @utility subtitle {
   font-family: var(--font-body);
