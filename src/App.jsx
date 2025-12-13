@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header/Header.jsx";
-import Logo from "./components/Hero/Logo.jsx";
-import Search from "./components/Search.jsx";
+
 import TopRow from "./components/Hero/TopRow.jsx";
 import Hero from "./components/Hero/Hero.jsx";
 import  HeroInfo from "./components/Hero/HeroInfo";
+
+import ExploreSection from "./components/Mosaic/ExploreSection.jsx";
+import PickAPlan from "./components/Pick A Plan/PickAPlan.jsx";
+import BrowseSection from "./components/Browse Categories/BrowseSection.jsx";
 import { getTrending } from "./API/tmdb";
 
 const App = () => {
@@ -37,6 +40,9 @@ const App = () => {
       <TopRow trending={trending} onChangeHero={setHeroMovie} />
     </section>
       
+      <ExploreSection />
+      <PickAPlan />
+      <BrowseSection />
 
     </main>
   );

@@ -76,18 +76,17 @@ const HeroInfo = ({ movie }) => {
     movie.overview || "No synopsis available for this title yet.";
 
   return (
-    <div className="hero-content max-w-5xl px-5 sm:px-10 pb-16">
-      {/* Title */}
-      <h1 className="hero-title">{title}</h1>
+  <div className="hero-content max-w-5xl px-5 sm:px-10 pb-16">
+    {/* Title */}
+    <h1 className="hero-title">{title}</h1>
 
+    {/* Content Wrapper */}
+    <div>
       {/* Meta pills */}
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs sm:text-sm">
-        {/* MOVIE / SERIES LABEL */}
         <span className="hero-pill">{mediaTypeLabel}</span>
-        
         {year && <span className="hero-pill">{year}</span>}
 
-        {/* STAR RATING */}
         {rating && (
           <span className="hero-pill">
             ★ {rating}
@@ -95,11 +94,8 @@ const HeroInfo = ({ movie }) => {
           </span>
         )}
 
-
-        {/* RUNTIME */}
         {runtimeLabel && <span className="hero-pill">{runtimeLabel}</span>}
 
-         {/* NEW → CONTENT RATING */}
         {certification && (
           <span className="hero-pill">{certification}</span>
         )}
@@ -113,7 +109,7 @@ const HeroInfo = ({ movie }) => {
       )}
 
       {/* Overview */}
-      <p className="hero-overview mt-4 max-w-2xl text-sm sm:text-base">
+      <p className="hero-subtitle hero-overview mt-4 max-w-2xl">
         {overview}
       </p>
 
@@ -129,12 +125,17 @@ const HeroInfo = ({ movie }) => {
           <span>Watch Trailer</span>
         </button>
 
-        <button className="hero-btn hero-btn-tertiary" aria-label="Add to My List">
+        <button
+          className="hero-btn hero-btn-tertiary"
+          aria-label="Add to My List"
+        >
           <span className="hero-btn-icon">＋</span>
         </button>
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default HeroInfo;

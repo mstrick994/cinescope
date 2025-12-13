@@ -24,3 +24,57 @@ export const getTitleDetails = async (id, mediaType = "movie") => {
 
   return res.data;
 };
+
+/**
+ *  Generic helper:
+ * Get either poster_path or backdrop_path for a given title.
+ *
+ * imageType: "poster" | "backdrop"
+ * mediaType: "movie" | "tv"
+ */
+export const getImagePathForTitle = async (
+  title,
+  mediaType = "movie",
+  imageType = "poster"
+) => {
+  if (!title) return null;
+
+  const searchEndpoint =
+    mediaType === "tv" ? "/search/tv" : "/search/movie";
+
+  const res = await client.get(searchEndpoint, {
+    params: {
+      query: title,
+      include_adult: false,
+    },
+  });
+
+  const results = res.data?.results || [];
+  if (!results.length) return null;
+
+  const firstMatch = results[0];
+
+  if (imageType === "poster") {
+    return firstMatch.poster_path || null;
+  }
+
+  if (imageType === "backdrop") {
+    return firstMatch.backdrop_path || null;
+  }
+
+  return null;
+};
+
+/**
+ *  Wrapper for poster images
+ */
+export const getPosterPathForTitle = (title, mediaType = "movie") => {
+  return getImagePathForTitle(title, mediaType, "poster");
+};
+
+/**
+ * Wrapper for hero-style backdrops
+ */
+export const getBackdropPathForTitle = (title, mediaType = "movie") => {
+  return getImagePathForTitle(title, mediaType, "backdrop");
+};
