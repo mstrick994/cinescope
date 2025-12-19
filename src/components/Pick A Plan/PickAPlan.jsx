@@ -24,67 +24,44 @@ const PRICES = {
 // false = dash
 // string = text
 const FEATURE_ROWS = [
-  {
-    id: "adFree",
-    label: "No ads",
-    premium: true,
-    essential: false,
-  },
-  {
-    id: "library",
-    label: "Access to full CineScope library",
-    premium: true,
-    essential: true,
-  },
-  {
-    id: "quality",
-    label: "Streaming quality",
-    premium: "Up to 4K* on supported devices",
-    essential: "Up to HD*",
-  },
-  {
-    id: "devices",
-    label: "Streams at once",
-    premium: "Up to 4 devices",
-    essential: "Up to 2 devices",
-  },
-  {
-    id: "downloads",
-    label: "Download movies & shows",
-    premium: true,
-    essential: false,
-  },
-  {
-    id: "profiles",
-    label: "Profiles & watchlists",
-    premium: true,
-    essential: true,
-  },
+  { id: "adFree", label: "No ads", premium: true, essential: false },
+  { id: "library", label: "Access to full CineScope library", premium: true, essential: true },
+  { id: "quality", label: "Streaming quality", premium: "Up to 4K* on supported devices", essential: "Up to HD*" },
+  { id: "devices", label: "Streams at once", premium: "Up to 4 devices", essential: "Up to 2 devices" },
+  { id: "downloads", label: "Download movies & shows", premium: true, essential: false },
+  { id: "profiles", label: "Profiles & watchlists", premium: true, essential: true },
 ];
 
 const renderFeatureCell = (value) => {
-  if (value === true) {
-    return <span className="text-sm text-cine-highlight">✓</span>;
-  }
-
-  if (value === false) {
-    return <span className="text-sm text-cine-muted/60">—</span>;
-  }
-
+  if (value === true) return <span className="text-sm text-cine-highlight">✓</span>;
+  if (value === false) return <span className="text-sm text-cine-muted/60">—</span>;
   return <span className="text-xs sm:text-sm text-cine-muted">{value}</span>;
 };
 
 const PickAPlan = () => {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
+
+  // NEW: for Hulu-style mobile view (one plan at a time)
+  const [selectedPlan, setSelectedPlan] = useState("premium"); // "premium" | "essential"
+
   const currentPricing = PRICES[billingPeriod];
+
+  const selectedPlanName = selectedPlan === "premium" ? "Premium" : "Essential";
+  const selectedPlanTag =
+    selectedPlan === "premium"
+      ? "Best for movie lovers & families"
+      : "Great value starter plan";
+
+  const selectedPlanPrice =
+    selectedPlan === "premium" ? currentPricing.premium : currentPricing.essential;
 
   return (
     <section
       id="plans"
       className="relative w-full bg-gradient-to-b from-[#05040A] via-[#070B16] to-[#0C1726] border-t border-white/5"
     >
-      {/* Soft top overlay so it blends with the section above */}
-      <div className="pointer-events-none absolute inset-x-0 -top-10 h-10 bg-gradient-to-b from-black/40 to-transparent" />
+      {/* Top overlay*/}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-black/40 to-transparent" />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
         {/* Heading */}
@@ -114,8 +91,103 @@ const PickAPlan = () => {
           )}
         </div>
 
-        {/* Scrollable comparison table */}
-        <div className="overflow-x-auto">
+        {/* =========================
+            MOBILE (Hulu-style)
+           ========================= */}
+        <div className="md:hidden">
+          {/* Plan selector pill */}
+          <div className="flex justify-center mb-8">
+            <div className="w-full max-w-[360px]">
+              <label className="sr-only" htmlFor="planSelect">
+                Select plan
+              </label>
+
+              <div className="relative">
+                <select
+                  id="planSelect"
+                  value={selectedPlan}
+                  onChange={(e) => setSelectedPlan(e.target.value)}
+                  className="
+                    w-full appearance-none
+                    rounded-full
+                    border border-white/15
+                    bg-white/5
+                    px-5 py-3
+                    text-sm font-semibold text-white
+                    backdrop-blur-md
+                    shadow-[0_18px_60px_rgba(0,0,0,0.55)]
+                    focus:outline-none focus:ring-2 focus:ring-cine-highlight/60
+                  "
+                >
+                  <option value="premium">Premium</option>
+                  <option value="essential">Essential</option>
+                </select>
+
+                <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/70">
+                  ▼
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Selected plan header */}
+          <div className="max-w-[520px] mx-auto border-y border-white/10 py-6 text-center">
+            <p className="text-base font-semibold text-white">{selectedPlanName}</p>
+            <p className="mt-1 text-xs text-cine-muted">{selectedPlanTag}</p>
+
+            <div className="mt-3 flex items-baseline justify-center gap-2">
+              <p className="text-3xl font-semibold text-white">
+                <span className="align-top text-lg">$</span>
+                {selectedPlanPrice}
+              </p>
+              <span className="text-xs text-cine-muted">
+                /{billingPeriod === "monthly" ? "mo" : "yr"} after trial
+              </span>
+            </div>
+          </div>
+
+          {/* Features (stacked) */}
+          <div className="max-w-[520px] mx-auto divide-y divide-white/10">
+            {FEATURE_ROWS.map((row) => {
+              const value = selectedPlan === "premium" ? row.premium : row.essential;
+
+              return (
+                <div key={row.id} className="py-5">
+                  <p className="text-sm text-white mb-2">{row.label}</p>
+                  <div className="flex justify-center">
+                    {renderFeatureCell(value)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* CTA */}
+          <div className="max-w-[520px] mx-auto pt-8">
+            <button
+              type="button"
+              className="
+                w-full rounded-xl
+                bg-cine-highlight/70
+                px-4 py-3
+                text-sm font-semibold text-white
+                transition-colors
+                hover:bg-cine-accent/50
+              "
+            >
+              {currentPricing.cta}
+            </button>
+
+            <p className="mt-3 text-[11px] text-cine-muted/80 text-center">
+              Free trial available for new members only. Cancel anytime before your billing date.
+            </p>
+          </div>
+        </div>
+
+        {/* =========================
+            DESKTOP (your table)
+           ========================= */}
+        <div className="hidden md:block overflow-x-auto">
           {/* No card bg; only horizontal lines between rows */}
           <div className="min-w-[720px] divide-y divide-white/10 bg-transparent">
             {/* Header row */}
@@ -126,12 +198,8 @@ const PickAPlan = () => {
               {/* Premium header */}
               <div className="px-4 sm:px-6">
                 <div className="flex flex-col gap-1 text-center">
-                  <p className="text-base sm:text-lg font-semibold text-white">
-                    Premium
-                  </p>
-                  <p className="text-xs text-cine-muted">
-                    Best for movie lovers & families
-                  </p>
+                  <p className="text-base sm:text-lg font-semibold text-white">Premium</p>
+                  <p className="text-xs text-cine-muted">Best for movie lovers & families</p>
                   <div className="mt-2 flex items-baseline justify-center gap-1.5">
                     <p className="text-xl sm:text-2xl font-semibold text-white">
                       <span className="align-top text-sm">$</span>
@@ -147,12 +215,8 @@ const PickAPlan = () => {
               {/* Essential header */}
               <div className="px-4 sm:px-6">
                 <div className="flex flex-col gap-1 text-center">
-                  <p className="text-base sm:text-lg font-semibold text-white">
-                    Essential
-                  </p>
-                  <p className="text-xs text-cine-muted">
-                    Great value starter plan
-                  </p>
+                  <p className="text-base sm:text-lg font-semibold text-white">Essential</p>
+                  <p className="text-xs text-cine-muted">Great value starter plan</p>
                   <div className="mt-2 flex items-baseline justify-center gap-1.5">
                     <p className="text-xl sm:text-2xl font-semibold text-white">
                       <span className="align-top text-sm">$</span>
@@ -169,17 +233,14 @@ const PickAPlan = () => {
             {/* Feature rows */}
             {FEATURE_ROWS.map((row) => (
               <div key={row.id} className="grid grid-cols-3 bg-transparent">
-                {/* Feature label */}
                 <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center">
                   <p className="text-xs sm:text-sm text-white">{row.label}</p>
                 </div>
 
-                {/* Premium cell */}
                 <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-center">
                   {renderFeatureCell(row.premium)}
                 </div>
 
-                {/* Essential cell */}
                 <div className="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-center">
                   {renderFeatureCell(row.essential)}
                 </div>
@@ -188,29 +249,25 @@ const PickAPlan = () => {
 
             {/* CTA row */}
             <div className="grid grid-cols-3 bg-transparent py-5">
-              {/* Fine print */}
               <div className="px-4 sm:px-6 flex items-center">
                 <p className="text-[11px] sm:text-xs text-cine-muted/80">
-                  Free trial available for new members only. Cancel anytime
-                  before your billing date.
+                  Free trial available for new members only. Cancel anytime before your billing date.
                 </p>
               </div>
 
-              {/* Premium button */}
               <div className="px-4 sm:px-6 flex items-center">
                 <button
                   type="button"
-                  className="w-full rounded-md bg-cine-highlight/70 px-4 py-2.5 text-xs sm:text-sm font-semibold text-whte transition-colors hover:bg-cine-accent/50"
+                  className="w-full rounded-md bg-cine-highlight/70 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white transition-colors hover:bg-cine-highlight/60"
                 >
                   {currentPricing.cta}
                 </button>
               </div>
 
-              {/* Essential button */}
               <div className="px-4 sm:px-6 flex items-center">
                 <button
                   type="button"
-                  className="w-full rounded-md bg-cine-highlight/70 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white transition-colors hover:bg-cine-accent/50"
+                  className="w-full rounded-md bg-cine-highlight/70 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white transition-colors hover:bg-cine-highlight/60"
                 >
                   {currentPricing.cta}
                 </button>

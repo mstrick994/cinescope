@@ -19,6 +19,7 @@
   --color-cine-muted: #9ca3af;
   --color-cine-accent: #2a39ff;
   --color-cine-highlight: #00d8ff;
+  --color-cine-scope: #6d28d9;
   --color-cine-overlay: rgba(11, 13, 23, 0.75);
 
   /* Legacy */
@@ -98,7 +99,6 @@
   );
 }
 
-
 /* ==============================================================
    HERO SYSTEM — Apple TV Style
 ============================================================== */
@@ -112,24 +112,23 @@
     */
 
     height: min(120vh, 175vw);
-
   }
 
   /* Laptops / tablets */
-@media (max-width: 1200px) {
-  .hero-container {
-    height: min(100vh, 190vw);
+  @media (max-width: 1200px) {
+    .hero-container {
+      height: min(100vh, 190vw);
+    }
   }
-}
 
-/* Phones */
-@media (max-width: 800px) {
-  .hero-container {
-    height: min(95vh, 210vw);
+  /* Phones */
+  @media (max-width: 800px) {
+    .hero-container {
+      height: min(95vh, 210vw);
+    }
   }
-}
 
-   .hero-actions {
+  .hero-actions {
     @apply mt-6 flex flex-wrap items-center gap-3;
     @apply sm:mt-6 sm:flex-row sm:items-center sm:gap-4;
   }
@@ -143,7 +142,7 @@
     @apply sm:px-6 sm:py-2.5 sm:text-sm lg:text-base;
   }
 
-    .hero-subtitle {
+  .hero-subtitle {
     @apply text-xs sm:text-sm md:text-base lg:text-lg text-white/80 leading-relaxed;
   }
 
@@ -153,8 +152,8 @@
 
   /* Play Now – matches "Cine" side (blue / cyan) */
   .hero-btn-primary {
-    background-image: linear-gradient(to right, #97EFFF, #00D8FF);
-    color: #0B0D17; /* dark bg color so the text pops */
+    background-image: linear-gradient(to right, #97efff, #00d8ff);
+    color: #0b0d17; /* dark bg color so the text pops */
     box-shadow: var(--shadow-soft);
   }
 
@@ -165,8 +164,8 @@
 
   /* Watch Trailer – matches "Scope" side (purple) */
   .hero-btn-secondary {
-    background-image: linear-gradient(to right, #D6C7FF, #AB8BFF);
-    color: #0B0D17;
+    background-image: linear-gradient(to right, #d6c7ff, #ab8bff);
+    color: #0b0d17;
     box-shadow: var(--shadow-soft);
   }
 
@@ -190,8 +189,8 @@
   }
 
   .hero-title {
-    @apply  text-left mb-4;
-     font-family: var(--font-heading);
+    @apply text-left mb-4;
+    font-family: var(--font-heading);
     font-size: clamp(3.2rem, 7vw, 6.8rem);
     line-height: 1.05;
   }
@@ -214,13 +213,11 @@
   .hero-content {
     @apply relative z-10 flex flex-col px-0 sm:px-6
     max-h-[70vh] overflow-y-auto sm:max-h-none sm:overflow-visible;
-    padding-top:  clamp(4rem, 14vh, 7rem);
+    padding-top: clamp(4rem, 14vh, 7rem);
     font-size: clamp(0.9rem, 1.15vw, 1.1rem);
   }
 
- 
-
-   .hero-pill {
+  .hero-pill {
     @apply inline-flex items-center px-3 py-1 rounded-full
     bg-black/40 border border-white/10
     text-[0.7rem] sm:text-xs font-medium text-cine-text/80;
@@ -231,7 +228,6 @@
     @apply text-cine-text/80 leading-relaxed line-clamp-4;
   }
 }
-
 
 /* ============================================
    NEW RESPONSIVE CARD SYSTEM USING RATIOS
@@ -263,7 +259,7 @@
    so 5 cards + gaps always fit without clipping the first one */
 @media (max-width: 1200px) {
   .carousel-card {
-    width: min(18vw, 210px);  /* slightly narrower, same tall vibe */
+    width: min(18vw, 210px); /* slightly narrower, same tall vibe */
   }
 }
 
@@ -279,9 +275,9 @@
 
 /* Match the mid-desktop tweak for active cards too */
 @media (max-width: 1200px) {
-.carousel-row {
-  height: 555px;
-}
+  .carousel-row {
+    height: 555px;
+  }
 
   .carousel-card.active {
     width: calc(min(19vw, 210px) * 1.15);
@@ -291,7 +287,7 @@
 /* Ghost spacer for scroll-snap so first card never clips */
 .snap-spacer {
   flex-shrink: 0;
-  width:clamp(40px, 8vw, 72px);  
+  width: clamp(40px, 8vw, 72px);
   height: 100%;
 }
 
@@ -301,23 +297,18 @@
   height: 100%;
 }
 
-
-
 /* Images always fill */
 .carousel-card img {
   @apply w-full h-full object-cover;
 }
 
-
 /* ============ SMALLER SCREENS OVERRIDES ============ */
-
-
 
 /* Small tablets / big phones (≤ 768px) */
 @media (max-width: 768px) {
   /* Give the row a fixed height big enough for the active card */
   .carousel-row {
-    height: 370px;              /* bump this up/down if you need */
+    height: 370px; /* bump this up/down if you need */
   }
 
   /* Slightly narrower cards so 5 fit comfortably */
@@ -331,19 +322,18 @@
     /* aspect-ratio 1 / 1.9 from base active rule */
   }
 
-    .snap-spacer {
-    width: clamp(56px, 14vw, 96px);   /* noticeably bigger on small screens */
+  .snap-spacer {
+    width: clamp(56px, 14vw, 96px); /* noticeably bigger on small screens */
   }
 
   .snap-spacer-right {
     width: 1vw;
   }
-
 }
 
 @media (max-width: 608px) {
   .carousel-row {
-    height: 300px;              /* still taller than the active card */
+    height: 300px; /* still taller than the active card */
   }
 
   .carousel-card {
@@ -361,7 +351,7 @@
 /* Small phones (≤ 480px) */
 @media (max-width: 480px) {
   .carousel-row {
-    height: 225px;              /* still taller than the active card */
+    height: 225px; /* still taller than the active card */
   }
 
   .carousel-card {
@@ -378,7 +368,7 @@
 
 @media (max-width: 300px) {
   .carousel-row {
-    height: 200px;              /* still taller than the active card */
+    height: 200px; /* still taller than the active card */
   }
 
   .carousel-card {
@@ -389,18 +379,16 @@
     width: calc(min(18vw, 160px) * 1.15);
   }
   .snap-spacer-right {
-    width: .5vw;
+    width: 0.5vw;
   }
 }
-
 
 /* ==============================================================
    SEARCH BAR — CLEAN FLAT HEADER STYLE
 ============================================================== */
 @layer components {
   .search {
-    @apply
-      flex items-center
+    @apply flex items-center
       w-full max-w-[180px] sm:max-w-[220px]   /* smaller + fits header better */
       h-8                                      /* consistent visible height */
       bg-white/12                              /* subtle, readable always */
@@ -410,14 +398,12 @@
       transition-all duration-200;
   }
 
-
-/* Mobile menu version – full width, beefier, more padding */
-.mobile-menu-overlay .search {
-  @apply
-    max-w-full      /* no width cap */
+  /* Mobile menu version – full width, beefier, more padding */
+  .mobile-menu-overlay .search {
+    @apply max-w-full      /* no width cap */
     h-10            /* a little taller */
-    px-4;           /* more breathing room */
-}
+    px-4; /* more breathing room */
+  }
 
   .search:hover {
     @apply bg-white/20 border-white/30;
@@ -432,18 +418,16 @@
   }
 
   .search img {
-  @apply
-    absolute
+    @apply absolute
     left-3           /* a bit more inset from left edge */
     top-1/2
     -translate-y-1/2
     h-4 w-4
     opacity-80;
-}
+  }
 
   .search input {
-    @apply
-      w-full
+    @apply w-full
       bg-transparent
       pl-9 pr-2
       text-[0.8rem] sm:text-sm
@@ -452,7 +436,6 @@
       outline-hidden;
   }
 }
-
 
 /* ==============================================================
    MOVIE GRID & CARDS (for future sections)
@@ -524,6 +507,10 @@
   @apply bg-linear-to-r from-[#D6C7FF] to-[#AB8BFF] bg-clip-text text-transparent;
 }
 
+@utility bg-gradient-scope {
+  @apply bg-linear-to-r from-[#D6C7FF] to-[#AB8BFF];
+}
+
 @utility hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -559,7 +546,6 @@
     font-size: var(--font-size-hero-desktop);
   }
 }
-
 
 @utility subtitle {
   font-family: var(--font-body);

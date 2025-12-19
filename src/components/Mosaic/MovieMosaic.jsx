@@ -145,6 +145,7 @@ const MovieMosaic = () => {
 
   return (
     <div
+     style={{ overflowAnchor: "none" }} // Prevents browser from scroll anchoring
       className={`
         w-full h-full
         transition-opacity duration-500 ease-out

@@ -19,7 +19,7 @@ const ExploreSection = () => {
       {/* Banner wrapper – controls the visible height */}
       <div
         className="
-          relative w-full
+          relative w-full 
           h-[340px] sm:h-[380px] md:h-[420px] lg:h-[460px]
           overflow-hidden
         "
@@ -39,8 +39,8 @@ const ExploreSection = () => {
             className="absolute inset-0
               bg-gradient-to-b
               from-[#1B1034]/95
-              via-[#0B0D17]/92
-              to-[#0B0D17]/80"
+              via-[#0B0D17]/52
+              to-[#0B0D17]/60"
           />
 
           {/* Heavy top shadow for seamless blend into TopRow */}

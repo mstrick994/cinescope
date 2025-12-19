@@ -1,22 +1,64 @@
+// src/API/tmdb.js
 import axios from "axios";
 
-const client = axios.create({
+/**
+ * ============================================================
+ * TMDB CLIENT
+ * ============================================================
+ * - Base URL: https://api.themoviedb.org/3
+ * - API key is attached to every request via default params
+ */
+const tmdbClient = axios.create({
   baseURL: "https://api.themoviedb.org/3",
+  timeout: 12000,
   params: {
     api_key: import.meta.env.VITE_TMDB_API_KEY,
   },
 });
 
-export const getTrending = async () => {
-  const res = await client.get("/trending/all/week");
-  return res.data.results;
+/**
+ * ============================================================
+ * TRENDING
+ * ============================================================
+ * Use this when you truly mean "Trending right now".
+ * mediaType: "movie" | "tv" | "all"
+ * timeWindow: "day" | "week"
+ *
+ * ✅ UPDATE: supports pagination (page)
+ */
+export const getTrendingTitles = async (
+  mediaType = "all",
+  timeWindow = "week",
+  page = 1
+) => {
+  const res = await tmdbClient.get(`/trending/${mediaType}/${timeWindow}`, {
+    params: { page },
+  });
+
+  return res.data?.results ?? [];
 };
 
-// NEW: fetch full details + rating info
+/**
+ * - This returns trending for ALL media types for the week.
+ */
+export const getTrending = async () => {
+  return getTrendingTitles("all", "week", 1);
+};
+
+/**
+ * ============================================================
+ * DETAILS
+ * ============================================================
+ * Fetch full details for a title.
+ * - movie: includes "release_dates" for ratings/regions
+ * - tv: includes "content_ratings"
+ *
+ * Later: you can also append "videos" for trailers when you build modals.
+ */
 export const getTitleDetails = async (id, mediaType = "movie") => {
   const isTv = mediaType === "tv";
 
-  const res = await client.get(`/${isTv ? "tv" : "movie"}/${id}`, {
+  const res = await tmdbClient.get(`/${isTv ? "tv" : "movie"}/${id}`, {
     params: {
       append_to_response: isTv ? "content_ratings" : "release_dates",
     },
@@ -26,55 +68,162 @@ export const getTitleDetails = async (id, mediaType = "movie") => {
 };
 
 /**
- *  Generic helper:
- * Get either poster_path or backdrop_path for a given title.
- *
- * imageType: "poster" | "backdrop"
- * mediaType: "movie" | "tv"
+ * ============================================================
+ * IMAGE HELPERS (poster / backdrop)
+ * ============================================================
+ * Given a title string (ex: "The Office"), search TMDB and return
+ * either poster_path or backdrop_path from the first match.
  */
 export const getImagePathForTitle = async (
   title,
   mediaType = "movie",
-  imageType = "poster"
+  imageType = "poster" // "poster" | "backdrop"
 ) => {
   if (!title) return null;
 
-  const searchEndpoint =
-    mediaType === "tv" ? "/search/tv" : "/search/movie";
+  const searchEndpoint = mediaType === "tv" ? "/search/tv" : "/search/movie";
 
-  const res = await client.get(searchEndpoint, {
+  const res = await tmdbClient.get(searchEndpoint, {
     params: {
       query: title,
       include_adult: false,
     },
   });
 
-  const results = res.data?.results || [];
-  if (!results.length) return null;
+  const results = res.data?.results ?? [];
+  if (results.length === 0) return null;
 
   const firstMatch = results[0];
 
-  if (imageType === "poster") {
-    return firstMatch.poster_path || null;
-  }
-
-  if (imageType === "backdrop") {
-    return firstMatch.backdrop_path || null;
-  }
+  if (imageType === "poster") return firstMatch.poster_path ?? null;
+  if (imageType === "backdrop") return firstMatch.backdrop_path ?? null;
 
   return null;
 };
 
-/**
- *  Wrapper for poster images
- */
 export const getPosterPathForTitle = (title, mediaType = "movie") => {
   return getImagePathForTitle(title, mediaType, "poster");
 };
 
-/**
- * Wrapper for hero-style backdrops
- */
 export const getBackdropPathForTitle = (title, mediaType = "movie") => {
   return getImagePathForTitle(title, mediaType, "backdrop");
+};
+
+/**
+ * ============================================================
+ * KEYWORDS (for Anime filtering, etc.)
+ * ============================================================
+ */
+const keywordIdCache = new Map();
+
+export const getKeywordId = async (keywordQuery) => {
+  if (!keywordQuery) return null;
+
+  const cacheKey = keywordQuery.toLowerCase().trim();
+  if (keywordIdCache.has(cacheKey)) {
+    return keywordIdCache.get(cacheKey);
+  }
+
+  const res = await tmdbClient.get("/search/keyword", {
+    params: { query: keywordQuery },
+  });
+
+  // Pick the first match (good enough for now; we can improve later)
+  const firstId = res.data?.results?.[0]?.id ?? null;
+
+  keywordIdCache.set(cacheKey, firstId);
+  return firstId;
+};
+
+/**
+ * ============================================================
+ * DISCOVER (Movies / TV)
+ * ============================================================
+ * This is your main "browse by genre" fetch.
+ *
+ * Supports:
+ * - includeGenreIds: number[] (required for your BrowseRow)
+ * - excludeGenreIds: number[] (required for your BrowseRow)
+ * - sorting (popular, top rated, etc)
+ * - minVotes (to avoid "top rated" junk with 4 votes)
+ * - originalLanguage (ex: "ja" for anime)
+ * - keywordQuery (ex: "anime" -> looks up keyword id -> with_keywords)
+ */
+export const discoverTitles = async ({
+  mediaType = "movie",
+  page = 1,
+  sortBy = "popularity.desc",
+
+  // OLD (backwards compatible)
+  genreId,
+
+  // NEW (preferred)
+  includeGenreIds, // number[]
+  excludeGenreIds, // number[]
+
+  // optional refiners
+  minVotes,
+  minRating,
+  originalLanguage,
+  keywordQuery,
+
+  // movie-only refiners
+  certificationCountry,
+  certificationLte,
+}) => {
+  const endpoint = mediaType === "tv" ? "/discover/tv" : "/discover/movie";
+
+  // Convert keywordQuery -> keywordId once
+  const keywordId = keywordQuery ? await getKeywordId(keywordQuery) : null;
+
+  /**
+   * Build "with_genres"
+   * - If includeGenreIds provided, use that.
+   * - Else fallback to old genreId.
+   */
+  let withGenres = "";
+  if (Array.isArray(includeGenreIds) && includeGenreIds.length > 0) {
+    withGenres = includeGenreIds.join(",");
+  } else if (typeof genreId === "number") {
+    withGenres = String(genreId);
+  }
+
+  /**
+   * Build "without_genres"
+   */
+  const withoutGenres =
+    Array.isArray(excludeGenreIds) && excludeGenreIds.length > 0
+      ? excludeGenreIds.join(",")
+      : "";
+
+  const res = await tmdbClient.get(endpoint, {
+    params: {
+      page,
+      sort_by: sortBy,
+
+      // only include if we actually have something to filter by
+      ...(withGenres ? { with_genres: withGenres } : {}),
+      ...(withoutGenres ? { without_genres: withoutGenres } : {}),
+
+      include_adult: false,
+      include_video: false,
+
+      ...(typeof minVotes === "number" ? { "vote_count.gte": minVotes } : {}),
+      ...(typeof minRating === "number"
+        ? { "vote_average.gte": minRating }
+        : {}),
+      ...(originalLanguage ? { with_original_language: originalLanguage } : {}),
+      ...(keywordId ? { with_keywords: keywordId } : {}),
+
+      // Movie certifications (MPAA-like). TV discover does not support these.
+      ...(mediaType === "movie" && certificationCountry
+        ? { certification_country: certificationCountry }
+        : {}),
+      ...(mediaType === "movie" && certificationLte
+        ? { "certification.lte": certificationLte }
+        : {}),
+    },
+  });
+
+  return res.data?.results ?? [];
 };
