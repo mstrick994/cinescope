@@ -1,16 +1,67 @@
-# React + Vite
+# CineScope
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CineScope is a **streaming-style movie and TV browsing experience** built with React, inspired by platforms like Apple TV and Hulu.
 
-Currently, two official plugins are available:
+The project focuses on **real-world frontend challenges** such as genre accuracy, performance-conscious data fetching, responsive UI design, and scalable component architecture using live data from **The Movie Database (TMDB)**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This is a **portfolio project** designed to demonstrate practical frontend engineering decisions rather than a production clone.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What CineScope Does
 
-## Expanding the ESLint configuration
+- Displays a **full-bleed hero** with dynamically loaded backdrops
+- Provides tabbed browsing for **Movies**, **TV Shows**, and **Animation**
+- Renders **curated horizontal rows** with smooth scrolling and responsive controls
+- Includes a **plans & pricing UI** with monthly/annual billing toggle
+- Adapts cleanly across mobile, tablet, and desktop layouts
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Core Technical Focus
+
+### Genre-Accurate Browsing
+TMDB titles often belong to multiple genres, which can lead to misplaced results.  
+CineScope enforces **“shelf accuracy”** by:
+
+- Prioritizing **primary genre matching**
+- Supporting include / exclude genre rules
+- Allowing strict vs mixed genre behavior per row
+- Adding optional refiners (language, keywords like “anime” or “sitcom”)
+
+This prevents issues like sitcoms appearing in drama shelves or animation overtaking action rows.
+
+### Performance-Minded Fetching
+- Lightweight **in-memory caching** with expiration
+- Minimal API requests per row (fetches more only when needed)
+- Client-side filtering where TMDB endpoints lack discover options
+- Designed to reduce over-fetching and rate-limit pressure
+
+---
+
+## Tech Stack
+
+- **React 19**
+- **Vite**
+- **Tailwind CSS v4** (custom design tokens)
+- **Axios** (TMDB API client)
+- **ESLint** (React Hooks + Vite rules)
+
+Additional libraries installed for future expansion:
+Framer Motion, React Hook Form, Zod, MUI (Emotion)
+
+---
+
+## Project Structure (High Level)
+
+```text
+src/
+  API/
+    tmdb.js            # API client + discover/trending helpers
+    tmdbGenres.js      # Centralized genre constants & exclusions
+  components/
+    Header/            # Desktop & mobile navigation
+    Hero/              # Hero banner & trending content
+    Browse Categories/ # Tabs, rows, title cards
+    Pick A Plan/       # Pricing & billing UI
+    Modal/             # Placeholder for future features
