@@ -69,6 +69,19 @@ export const getTitleDetails = async (id, mediaType = "movie") => {
 
 /**
  * ============================================================
+ * CREDITS (cast)
+ * ============================================================
+ * Used for the title details modal.
+ */
+export const getTitleCredits = async (id, mediaType = "movie") => {
+  const isTv = mediaType === "tv";
+
+  const res = await tmdbClient.get(`/${isTv ? "tv" : "movie"}/${id}/credits`);
+  return res.data;
+};
+
+/**
+ * ============================================================
  * IMAGE HELPERS (poster / backdrop)
  * ============================================================
  * Given a title string (ex: "The Office"), search TMDB and return

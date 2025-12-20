@@ -213,7 +213,7 @@ const BROWSE_TABS = {
   },
 };
 
-const BrowseSection = () => {
+const BrowseSection = ({ onOpenDetails }) => {
   const [activeTab, setActiveTab] = useState("movies");
   const [heroBackgrounds, setHeroBackgrounds] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -356,6 +356,7 @@ const BrowseSection = () => {
             mode={row.mode}
             modes={row.modes}
             minVotes={row.minVotes}
+            onOpenDetails={onOpenDetails}
           />
         ))}
       </div>

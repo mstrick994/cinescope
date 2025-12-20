@@ -202,6 +202,8 @@ const BrowseRow = ({
   modes = ["popular", "trending", "top_rated"],
 
   minVotes,
+
+  onOpenDetails,
 }) => {
   const rowRef = useRef(null);
 
@@ -210,6 +212,35 @@ const BrowseRow = ({
   const [hasError, setHasError] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [openMenuItemId, setOpenMenuItemId] = useState(null);
+  const [activeItemId, setActiveItemId] = useState(null);
+
+  // Mobile behavior: tapping outside the cards clears the active highlight.
+  useEffect(() => {
+    const onPointerDown = (e) => {
+      // Only apply on small screens (Tailwind md breakpoint).
+      if (typeof window === "undefined") return;
+      if (!window.matchMedia?.("(max-width: 767px)")?.matches) return;
+
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+
+      // Ignore clicks inside the portal menu.
+      if (target.closest("[data-playlist-menu]")) return;
+
+      const strip = rowRef.current;
+      if (!strip) return;
+
+      // If click is outside this row's card strip, clear active state.
+      if (!strip.contains(target)) {
+        setActiveItemId(null);
+        setOpenMenuItemId(null);
+      }
+    };
+
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => window.removeEventListener("pointerdown", onPointerDown);
+  }, []);
 
   const updateScrollButtons = () => {
     const el = rowRef.current;
@@ -567,7 +598,23 @@ const BrowseRow = ({
         className="relative flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pr-4 scroll-px-4"
       >
         {items.map((item) => (
-          <TitleCard key={item.id} item={item} mediaType={mediaType} />
+          <TitleCard
+            key={item.id}
+            item={item}
+            mediaType={mediaType}
+            onOpenDetails={onOpenDetails}
+            isMenuOpen={openMenuItemId === item.id}
+            isActive={activeItemId === item.id}
+            onActivate={() => setActiveItemId(item.id)}
+            onToggleMenu={() =>
+              setOpenMenuItemId((prev) => {
+                const next = prev === item.id ? null : item.id;
+                setActiveItemId(item.id);
+                return next;
+              })
+            }
+            onCloseMenu={() => setOpenMenuItemId(null)}
+          />
         ))}
         <div aria-hidden className="shrink-0 w-10 sm:w-12 md:w-16" />
       </div>
