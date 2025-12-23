@@ -1,5 +1,11 @@
 import TopRowCard from "./TopRowCard";
-import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { getTitleDetails } from "../../API/tmdb";
 
 const TopRow = ({ trending, onChangeHero }) => {
@@ -62,6 +68,65 @@ const TopRow = ({ trending, onChangeHero }) => {
       behavior: "smooth",
     });
   }, []);
+
+  // Ensure the first/last cards can fully show on narrow screens.
+  // We dynamically set horizontal padding based on the active card width
+  // so scroll-snap center doesn't start clipped.
+  useLayoutEffect(() => {
+    const container = rowRef.current;
+    if (!container) return;
+
+    // Only needed on small screens. On desktop/laptop this padding creates
+    // excessive empty space and makes the row feel "over-snapped".
+    const isSmall =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(max-width: 768px)")?.matches;
+
+    if (!isSmall) {
+      container.style.removeProperty("--carousel-edge-padding");
+      return;
+    }
+
+    let raf1 = 0;
+    let raf2 = 0;
+    let timeoutId = 0;
+
+    const updateEdgePadding = () => {
+      const card = container.querySelector(`#card-${activeIndex}`);
+      if (!(card instanceof Element)) return;
+
+      const containerW = container.clientWidth;
+
+      // IMPORTANT:
+      // The active card grows via CSS transform + transition, so measuring once
+      // immediately can catch the pre-transition size. We re-measure below.
+      const cardW = card.getBoundingClientRect().width;
+
+      // Add a small safety margin so the first/last card never kisses the edge.
+      const margin = 12;
+      const pad = Math.max(0, Math.floor((containerW - cardW) / 2) + margin);
+
+      container.style.setProperty("--carousel-edge-padding", `${pad}px`);
+    };
+
+    updateEdgePadding();
+
+    // Re-measure after style/layout settles and after the transform transition.
+    raf1 = requestAnimationFrame(() => {
+      updateEdgePadding();
+      raf2 = requestAnimationFrame(updateEdgePadding);
+    });
+
+    timeoutId = window.setTimeout(updateEdgePadding, 360);
+
+    window.addEventListener("resize", updateEdgePadding);
+    return () => {
+      window.removeEventListener("resize", updateEdgePadding);
+      if (raf1) cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [activeIndex, trending?.length]);
 
   // Load full hero details when activeIndex changes
   useEffect(() => {
@@ -158,7 +223,6 @@ const TopRow = ({ trending, onChangeHero }) => {
       </h2>
 
       <div ref={rowRef} className="carousel-row">
-        <div className="snap-spacer" aria-hidden="true" />
         {movies.map((movie, idx) => (
           <TopRowCard
             key={movie.id}
@@ -168,7 +232,6 @@ const TopRow = ({ trending, onChangeHero }) => {
             onClick={() => handleActive(idx)}
           />
         ))}
-        <div className="snap-spacer-right" aria-hidden="true" />
       </div>
 
       <div className="mb-3 mt-2 flex flex-col items-center gap-2">

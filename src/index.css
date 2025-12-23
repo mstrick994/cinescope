@@ -241,6 +241,19 @@
   lg:h-150
   md:h-120
   h-100;
+
+  /* Desktop/laptop: keep the original centered layout (no extra edge padding). */
+  justify-content: center;
+  padding-inline: 0;
+  scroll-padding-inline: 0;
+
+  /* Prevent vertical clipping when cards scale up */
+  overflow-y: visible;
+}
+
+/* This section contains the carousel; allow scaled cards to breathe */
+.trending-section {
+  overflow: visible;
 }
 
 /* ------- INACTIVE CARDS ------- */
@@ -284,18 +297,7 @@
   }
 }
 
-/* Ghost spacer for scroll-snap so first card never clips */
-.snap-spacer {
-  flex-shrink: 0;
-  width: clamp(40px, 8vw, 72px);
-  height: 100%;
-}
-
-.snap-spacer-right {
-  flex-shrink: 0;
-  width: clamp(7px, 4vw, 10px);
-  height: 100%;
-}
+/* Ghost spacers removed (padding handles edges now) */
 
 /* Images always fill */
 .carousel-card img {
@@ -306,20 +308,40 @@
 
 /* Small tablets / big phones (≤ 768px) */
 @media (max-width: 768px) {
-  /* Give the row a fixed height big enough for the active card */
+  /* Let the row size naturally on small screens.
+     We scale the active card via transform (visual) rather than changing its layout size,
+     which avoids clipping + removes the need for brittle fixed heights. */
   .carousel-row {
-    height: 370px; /* bump this up/down if you need */
+    /* Mobile: prevent left-edge clipping when using snap-center.
+     JS sets --carousel-edge-padding based on the active card width. */
+    justify-content: flex-start;
+    padding-inline: var(--carousel-edge-padding, 0px);
+    scroll-padding-inline: var(--carousel-edge-padding, 0px);
+
+    --carousel-card-w: clamp(110px, 32vw, 170px);
+    height: auto !important;
+    /* Give the row enough *layout* height to contain the scaled active card.
+       (Transforms don't affect layout, so without this the card can overlap below.) */
+    min-height: calc(var(--carousel-card-w) * 2.3 + 92px);
+    align-items: flex-end;
+    /* Important: transformed (scaled) cards don't affect layout height.
+     Give the row vertical breathing room and ensure Y overflow isn't clipped. */
+    overflow-y: visible;
+    padding-top: 44px;
+    padding-bottom: 44px;
   }
 
-  /* Slightly narrower cards so 5 fit comfortably */
+  /* Bigger, more consistent cards on ~360px wide phones */
   .carousel-card {
-    min-width: calc(min(16vw, 160px) * 1.15);
-    /* aspect-ratio stays 1 / 2.2 from the base rule */
+    width: var(--carousel-card-w);
+    /* Slightly less tall than desktop so the active state doesn't dominate mobile */
+    aspect-ratio: 1 / 2.1;
   }
 
   .carousel-card.active {
-    width: calc(min(18vw, 170px) * 1.15);
-    /* aspect-ratio 1 / 1.9 from base active rule */
+    width: var(--carousel-card-w);
+    aspect-ratio: 1 / 2.1;
+    transform: translateY(-6px) scale(1.05);
   }
 
   .snap-spacer {
@@ -333,15 +355,19 @@
 
 @media (max-width: 608px) {
   .carousel-row {
-    height: 300px; /* still taller than the active card */
+    --carousel-card-w: clamp(110px, 34vw, 165px);
+    min-height: calc(var(--carousel-card-w) * 2.25 + 90px);
   }
 
   .carousel-card {
-    min-width: calc(min(19vw, 160px));
+    width: var(--carousel-card-w);
+    aspect-ratio: 1 / 2.05;
   }
 
   .carousel-card.active {
-    width: calc(min(19vw, 160px) * 1.15);
+    width: var(--carousel-card-w);
+    aspect-ratio: 1 / 2.05;
+    transform: translateY(-6px) scale(1.05);
   }
   .snap-spacer-right {
     width: 1vw;
@@ -351,15 +377,19 @@
 /* Small phones (≤ 480px) */
 @media (max-width: 480px) {
   .carousel-row {
-    height: 225px; /* still taller than the active card */
+    --carousel-card-w: clamp(110px, 38vw, 155px);
+    min-height: calc(var(--carousel-card-w) * 2.2 + 88px);
   }
 
   .carousel-card {
-    min-width: calc(min(16.5vw, 160px));
+    width: var(--carousel-card-w);
+    aspect-ratio: 1 / 2;
   }
 
   .carousel-card.active {
-    width: calc(min(16.5vw, 160px) * 1.15);
+    width: var(--carousel-card-w);
+    aspect-ratio: 1 / 2;
+    transform: translateY(-5px) scale(1.05);
   }
   .snap-spacer-right {
     width: 1vw;
@@ -368,15 +398,19 @@
 
 @media (max-width: 300px) {
   .carousel-row {
-    height: 200px; /* still taller than the active card */
+    --carousel-card-w: clamp(92px, 44vw, 140px);
+    min-height: calc(var(--carousel-card-w) * 2.1 + 72px);
   }
 
   .carousel-card {
-    min-width: calc(min(18vw, 160px));
+    width: var(--carousel-card-w);
+    aspect-ratio: 1 / 1.95;
   }
 
   .carousel-card.active {
-    width: calc(min(18vw, 160px) * 1.15);
+    width: var(--carousel-card-w);
+    aspect-ratio: 1 / 1.95;
+    transform: translateY(-4px) scale(1.04);
   }
   .snap-spacer-right {
     width: 0.5vw;
