@@ -8,6 +8,8 @@ import HeroInfo from "./components/Hero/HeroInfo";
 import ExploreSection from "./components/Mosaic/ExploreSection.jsx";
 import PickAPlan from "./components/Pick A Plan/PickAPlan.jsx";
 import BrowseSection from "./components/Browse Categories/BrowseSection.jsx";
+import FAQSection from "./components/FAQ/FAQSection.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 import { getTrending } from "./API/tmdb";
 import Modal from "./components/Modal/Modal.jsx";
 
@@ -60,6 +62,8 @@ const App = () => {
       <ExploreSection />
       <PickAPlan />
       <BrowseSection onOpenDetails={openTitleModal} />
+      <FAQSection />
+      <Footer />
 
       <Modal
         isOpen={modalOpen}
