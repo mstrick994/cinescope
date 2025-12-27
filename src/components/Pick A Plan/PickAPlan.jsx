@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PlanToggle from "./PlanToggle";
 
 // Pricing for each billing period
@@ -25,21 +26,50 @@ const PRICES = {
 // string = text
 const FEATURE_ROWS = [
   { id: "adFree", label: "No ads", premium: true, essential: false },
-  { id: "library", label: "Access to full CineScope library", premium: true, essential: true },
-  { id: "quality", label: "Streaming quality", premium: "Up to 4K* on supported devices", essential: "Up to HD*" },
-  { id: "devices", label: "Streams at once", premium: "Up to 4 devices", essential: "Up to 2 devices" },
-  { id: "downloads", label: "Download movies & shows", premium: true, essential: false },
-  { id: "profiles", label: "Profiles & watchlists", premium: true, essential: true },
+  {
+    id: "library",
+    label: "Access to full CineScope library",
+    premium: true,
+    essential: true,
+  },
+  {
+    id: "quality",
+    label: "Streaming quality",
+    premium: "Up to 4K* on supported devices",
+    essential: "Up to HD*",
+  },
+  {
+    id: "devices",
+    label: "Streams at once",
+    premium: "Up to 4 devices",
+    essential: "Up to 2 devices",
+  },
+  {
+    id: "downloads",
+    label: "Download movies & shows",
+    premium: true,
+    essential: false,
+  },
+  {
+    id: "profiles",
+    label: "Profiles & watchlists",
+    premium: true,
+    essential: true,
+  },
 ];
 
 const renderFeatureCell = (value) => {
-  if (value === true) return <span className="text-sm text-cine-highlight">✓</span>;
-  if (value === false) return <span className="text-sm text-cine-muted/60">—</span>;
+  if (value === true)
+    return <span className="text-sm text-cine-highlight">✓</span>;
+  if (value === false)
+    return <span className="text-sm text-cine-muted/60">—</span>;
   return <span className="text-xs sm:text-sm text-cine-muted">{value}</span>;
 };
 
 const PickAPlan = () => {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
+
+  const navigate = useNavigate();
 
   // NEW: for Hulu-style mobile view (one plan at a time)
   const [selectedPlan, setSelectedPlan] = useState("premium"); // "premium" | "essential"
@@ -53,7 +83,13 @@ const PickAPlan = () => {
       : "Great value starter plan";
 
   const selectedPlanPrice =
-    selectedPlan === "premium" ? currentPricing.premium : currentPricing.essential;
+    selectedPlan === "premium"
+      ? currentPricing.premium
+      : currentPricing.essential;
+
+  const handleCta = () => {
+    navigate("/plans");
+  };
 
   return (
     <section
@@ -82,7 +118,9 @@ const PickAPlan = () => {
         <div className="flex flex-col items-center gap-3 mb-10">
           <PlanToggle
             value={billingPeriod}
-            onChange={(nextBillingPeriod) => setBillingPeriod(nextBillingPeriod)}
+            onChange={(nextBillingPeriod) =>
+              setBillingPeriod(nextBillingPeriod)
+            }
           />
           {currentPricing.savingsLabel && (
             <p className="text-xs sm:text-sm text-cine-highlight">
@@ -132,7 +170,9 @@ const PickAPlan = () => {
 
           {/* Selected plan header */}
           <div className="max-w-[520px] mx-auto border-y border-white/10 py-6 text-center">
-            <p className="text-base font-semibold text-white">{selectedPlanName}</p>
+            <p className="text-base font-semibold text-white">
+              {selectedPlanName}
+            </p>
             <p className="mt-1 text-xs text-cine-muted">{selectedPlanTag}</p>
 
             <div className="mt-3 flex items-baseline justify-center gap-2">
@@ -149,7 +189,8 @@ const PickAPlan = () => {
           {/* Features (stacked) */}
           <div className="max-w-[520px] mx-auto divide-y divide-white/10">
             {FEATURE_ROWS.map((row) => {
-              const value = selectedPlan === "premium" ? row.premium : row.essential;
+              const value =
+                selectedPlan === "premium" ? row.premium : row.essential;
 
               return (
                 <div key={row.id} className="py-5">
@@ -166,20 +207,22 @@ const PickAPlan = () => {
           <div className="max-w-[520px] mx-auto pt-8">
             <button
               type="button"
+              onClick={handleCta}
               className="
                 w-full rounded-xl
                 bg-cine-highlight/70
                 px-4 py-3
-                text-sm font-semibold text-white
+                text-sm font-semibold text-cine-bg
                 transition-colors
-                hover:bg-cine-accent/50
+                hover:bg-cine-highlight/60
               "
             >
               {currentPricing.cta}
             </button>
 
             <p className="mt-3 text-[11px] text-cine-muted/80 text-center">
-              Free trial available for new members only. Cancel anytime before your billing date.
+              Free trial available for new members only. Cancel anytime before
+              your billing date.
             </p>
           </div>
         </div>
@@ -198,8 +241,12 @@ const PickAPlan = () => {
               {/* Premium header */}
               <div className="px-4 sm:px-6">
                 <div className="flex flex-col gap-1 text-center">
-                  <p className="text-base sm:text-lg font-semibold text-white">Premium</p>
-                  <p className="text-xs text-cine-muted">Best for movie lovers & families</p>
+                  <p className="text-base sm:text-lg font-semibold text-white">
+                    Premium
+                  </p>
+                  <p className="text-xs text-cine-muted">
+                    Best for movie lovers & families
+                  </p>
                   <div className="mt-2 flex items-baseline justify-center gap-1.5">
                     <p className="text-xl sm:text-2xl font-semibold text-white">
                       <span className="align-top text-sm">$</span>
@@ -215,8 +262,12 @@ const PickAPlan = () => {
               {/* Essential header */}
               <div className="px-4 sm:px-6">
                 <div className="flex flex-col gap-1 text-center">
-                  <p className="text-base sm:text-lg font-semibold text-white">Essential</p>
-                  <p className="text-xs text-cine-muted">Great value starter plan</p>
+                  <p className="text-base sm:text-lg font-semibold text-white">
+                    Essential
+                  </p>
+                  <p className="text-xs text-cine-muted">
+                    Great value starter plan
+                  </p>
                   <div className="mt-2 flex items-baseline justify-center gap-1.5">
                     <p className="text-xl sm:text-2xl font-semibold text-white">
                       <span className="align-top text-sm">$</span>
@@ -251,14 +302,16 @@ const PickAPlan = () => {
             <div className="grid grid-cols-3 bg-transparent py-5">
               <div className="px-4 sm:px-6 flex items-center">
                 <p className="text-[11px] sm:text-xs text-cine-muted/80">
-                  Free trial available for new members only. Cancel anytime before your billing date.
+                  Free trial available for new members only. Cancel anytime
+                  before your billing date.
                 </p>
               </div>
 
               <div className="px-4 sm:px-6 flex items-center">
                 <button
                   type="button"
-                  className="w-full rounded-md bg-cine-highlight/70 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white transition-colors hover:bg-cine-highlight/60"
+                  className="w-full rounded-md bg-cine-highlight/70 px-4 py-2.5 text-xs sm:text-sm font-semibold text-cine-bg transition-colors hover:bg-cine-highlight/60"
+                  onClick={handleCta}
                 >
                   {currentPricing.cta}
                 </button>
@@ -267,7 +320,8 @@ const PickAPlan = () => {
               <div className="px-4 sm:px-6 flex items-center">
                 <button
                   type="button"
-                  className="w-full rounded-md bg-cine-highlight/70 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white transition-colors hover:bg-cine-highlight/60"
+                  className="w-full rounded-md bg-cine-highlight/70 px-4 py-2.5 text-xs sm:text-sm font-semibold text-cine-bg transition-colors hover:bg-cine-highlight/60"
+                  onClick={handleCta}
                 >
                   {currentPricing.cta}
                 </button>

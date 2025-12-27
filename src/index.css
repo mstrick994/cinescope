@@ -93,9 +93,9 @@
   @apply absolute inset-0 pointer-events-none;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.38) 0%,
-    rgba(0, 0, 0, 0.22) 40%,
-    rgba(0, 0, 0, 0) 100%
+    rgba(11, 13, 23, 0.55) 0%,
+    rgba(11, 13, 23, 0.28) 40%,
+    rgba(11, 13, 23, 0) 100%
   );
 }
 
