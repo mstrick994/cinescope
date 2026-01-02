@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/cinescope/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cinescope</title>
+    <script type="module" crossorigin src="/cinescope/assets/index-C2vJV7g5.js"></script>
+    <link rel="stylesheet" crossorigin href="/cinescope/assets/index-C53z9h3F.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // GitHub Pages SPA refresh fix:
+      // If the user refreshes a nested route like `/plans`, Pages serves `404.html`.
+      // Our `404.html` redirects back to `/?redirect=...` so we restore the route here
+      // before React Router mounts.
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get("redirect");
+        if (!redirect) return;
+
+        params.delete("redirect");
+        const baseRoot = window.location.pathname.replace(/\/?$/, "/");
+        const newUrl =
+          baseRoot.replace(/\/$/, "") +
+          redirect +
+          (params.toString() ? `?${params.toString()}` : "");
+
+        window.history.replaceState(null, "", newUrl);
+      })();
+    </script>
+  </body>
+</html>
