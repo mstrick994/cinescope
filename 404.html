@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -20,7 +20,9 @@
         var redirectUrl =
           BASE +
           "/?redirect=" +
-          encodeURIComponent(path + window.location.search + window.location.hash);
+          encodeURIComponent(
+            path + window.location.search + window.location.hash
+          );
 
         window.location.replace(redirectUrl);
       })();
