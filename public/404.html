@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CineScope</title>
+    <script>
+      // GitHub Pages SPA fallback:
+      // Redirect unknown routes back to the app entry point while preserving the path.
+      // Adjust BASE if you rename the repo.
+      (function () {
+        var BASE = "/cinescope";
+        var path = window.location.pathname;
+
+        // Strip the repo base (so `/cinescope/plans` becomes `/plans`)
+        if (path.indexOf(BASE) === 0) {
+          path = path.slice(BASE.length);
+        }
+
+        var redirectUrl =
+          BASE +
+          "/?redirect=" +
+          encodeURIComponent(path + window.location.search + window.location.hash);
+
+        window.location.replace(redirectUrl);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
