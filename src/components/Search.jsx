@@ -1,12 +1,10 @@
-
-
 const search = ({searchTerm, setSearchTerm}) => {
   return (
     <div className='search'>
       <div>
         {/* Magnifying Glass Icon */}
         <img
-          src="/icons/search.svg"   // <-- Put your SVG in public/icons/search.svg
+          src={`${import.meta.env.BASE_URL}icons/search.svg`}
           alt="Search"
           className="pointer-events-none"
         />
