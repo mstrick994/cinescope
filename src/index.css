@@ -211,9 +211,35 @@
   }
 
   .hero-content {
-    @apply relative z-10 flex flex-col px-0 sm:px-6 overflow-visible;
+    /*
+      Allow long hero info to remain readable on small screens
+      without stretching the hero off-screen.
+    */
+    @apply relative z-10 flex flex-col px-0 sm:px-6
+    max-h-[70vh] overflow-y-auto sm:max-h-none sm:overflow-visible;
     padding-top: clamp(4rem, 14vh, 7rem);
     font-size: clamp(0.9rem, 1.15vw, 1.1rem);
+  }
+
+  /* Very small phones (ex: ~320-360px wide) */
+  @media (max-width: 360px) {
+    .hero-actions {
+      gap: 0.5rem;
+      flex-wrap: nowrap;
+    }
+
+    .hero-btn {
+      @apply px-3 py-2 text-[11px];
+      gap: 0.25rem;
+    }
+
+    .hero-btn-icon {
+      @apply text-xs;
+    }
+
+    .hero-btn-tertiary {
+      @apply w-8 h-8;
+    }
   }
 
   .hero-pill {
