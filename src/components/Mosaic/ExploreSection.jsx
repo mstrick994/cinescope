@@ -1,18 +1,9 @@
 // src/components/Home/ExploreSection.jsx
 import MovieMosaic from "../Mosaic/MovieMosaic";
+import { useNavigate } from "react-router-dom";
 
 const ExploreSection = () => {
-  // Smoothly scrolls the user to the pricing/plans area
-  const scrollToPlansSection = () => {
-    const plansSectionElement = document.getElementById("plans-section");
-
-    if (plansSectionElement) {
-      plansSectionElement.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  };
+  const navigate = useNavigate();
 
   return (
     <section className="relative w-full">
@@ -28,7 +19,6 @@ const ExploreSection = () => {
             BACKGROUND LAYERS
            =============================== */}
         <div className="absolute inset-0 pointer-events-none">
-
           {/* Poster Mosaic Background */}
           <div className="absolute inset-[-8%] opacity-95">
             <MovieMosaic />
@@ -81,14 +71,14 @@ const ExploreSection = () => {
 
           {/* Subtitle */}
           <p className="hero-subtitle text-center max-w-2xl">
-            Dive into blockbuster movies, iconic series, and animated favorites —
-            then choose the CineScope plan that fits how you watch.
+            Dive into blockbuster movies, iconic series, and animated favorites
+            — then choose the CineScope plan that fits how you watch.
           </p>
 
           {/* Primary CTA Button */}
           <button
             type="button"
-            onClick={scrollToPlansSection}
+            onClick={() => navigate("/plans")}
             className="mt-6 hero-btn hero-btn-primary"
           >
             Explore plan options
