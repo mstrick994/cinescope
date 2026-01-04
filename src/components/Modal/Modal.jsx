@@ -105,7 +105,7 @@ const CastChip = ({ person }) => {
     : null;
 
   return (
-   <div className="shrink-0 w-[130px] xs:w-[140px] sm:w-[140px] md:w-[150px]">
+    <div className="shrink-0 w-[130px] xs:w-[140px] sm:w-[140px] md:w-[150px]">
       <div className="h-full rounded-xl overflow-hidden bg-white/5 border border-white/10 flex flex-col">
         <div className="aspect-[2/3] w-full shrink-0">
           {imgUrl ? (
@@ -411,7 +411,7 @@ const Modal = ({ isOpen, onClose, selection }) => {
                           {mediaType === "tv" ? "TV" : "Movie"}
                         </p>
 
-                        <h2 className="mt-1 text-2xl sm:text-3xl font-semibold text-white truncate">
+                        <h2 className="mt-1 text-2xl sm:text-3xl font-semibold text-white line-clamp-4 sm:line-clamp-2">
                           {titleText}
                         </h2>
 
