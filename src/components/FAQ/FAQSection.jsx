@@ -30,19 +30,19 @@ const FAQSection = () => {
         id: "missing",
         question: "Why is a title missing, or why is the info incomplete?",
         answer:
-          "Sometimes a title is not available yet, has limited metadata, or is listed differently depending on region and source data. If a poster, synopsis, or cast looks incomplete, it usually means the source has not published it yet.",
+          "Sometimes a title may not be available yet, has limited metadata, or is listed differently depending on region and source data. If a poster, synopsis, or cast looks incomplete, it usually means the source has not published it yet.",
       },
       {
         id: "privacy",
         question: "Does CineScope track me?",
         answer:
-          "CineScope is built to be low drama with your privacy. Your likes, dislikes, and saved items are used to improve your experience, not to sell you. You control what you save and what you keep.",
+          "CineScope is built to keep your privacy a priorityin mind. Your likes, dislikes, and saved items are used to improve your experience, not to sell your information. You control what you save and what you keep.",
       },
       {
         id: "feedback",
         question: "How can I request a feature or report a bug?",
         answer:
-          "If something feels off, tell us what you clicked and what you expected to happen. Screenshots help, but a quick description works too. We build CineScope in iterations, so feedback directly shapes what gets improved next.",
+          "If something feels off, tell us what happened. Screenshots help, but a quick description works too. We build CineScope in iterations, so feedback directly shapes what gets improved next.",
       },
     ],
     []
