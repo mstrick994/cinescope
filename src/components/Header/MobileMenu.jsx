@@ -1,4 +1,3 @@
-// src/components/Header/MobileMenu.jsx
 import Directory from "./Directory.jsx";
 import Search from "../Search.jsx";
 
